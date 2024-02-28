@@ -15,19 +15,17 @@ def saturado(x):
     return np.where(x > maximo, maximo, np.where(x < minimo, minimo, x))
 
 def filtrado_fir(senal, coeficientes):  
-    senal_float = senal.astype(float) #Señal a punto flotante
-    coeficientes_float = coeficientes.astype(float) #Coheficientes a punto flotante
     longitud_senal = len(senal) 
     longitud_coeficientes = len(coeficientes)
     senal_filtrada = np.zeros(longitud_senal) # Señal filtrada en flotante
 
     for n in range(longitud_senal):
-        suma = 0.0
+        senal_auxiliar = 0.0
         for k in range(longitud_coeficientes):
-            producto = senal_float[n - k] * coeficientes_float[k] # Señal * coeficiente
-            suma = suma + producto
+            producto = senal[n - k] * coeficientes[k] # Señal * coeficiente
+            senal_auxiliar = senal_auxiliar + producto
 
-        senal_filtrada[n] = suma
+        senal_filtrada[n] = senal_auxiliar
 
     resultado_q78 = saturado(np.round(senal_filtrada * 128).astype(np.int16)) # Señal filtrada a Q7.8
 
