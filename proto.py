@@ -18,10 +18,12 @@ def filtrado_fir(x, b):
     
     y = np.zeros(Nx, dtype=np.int32)
     
-    # Convolución
-    for n in range(Nx):
+    # Convolución con loop unrolling de profundidad 2
+    for n in range(0, Nx, 2):
         for k in range(min(Nb, n + 1)):
-            y[n] += b[k] * x_padded[n - k]  
+            y[n] += b[k] * x_padded[n - k]
+            if n + 1 < Nx:
+                y[n + 1] += b[k] * x_padded[n + 1 - k] 
 
     return y
 
