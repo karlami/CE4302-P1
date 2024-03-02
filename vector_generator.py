@@ -22,7 +22,7 @@ def generate_vector():
     array = np.random.uniform(min_value, max_value, num_elements)
 
     # Convert the array to Q7.8 format
-    array_q7_8 = np.round(array * 256).astype(np.int8) / 256
+    array_q7_8 = np.round(array * 127).astype(np.int16) 
     
     return array_q7_8
 
