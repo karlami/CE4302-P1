@@ -1,0 +1,7 @@
+module signExtendImm (
+  input [7:0] in,
+  output [`REG_FILE_SIZE-1:0] out
+);
+  // Extensión de signo
+  assign out = (in[7] == 1) ? {`REG_FILE_SIZE-8{1'b1}, in} : {`REG_FILE_SIZE-8{1'b0}, in};
+endmodule // signExtendImm
