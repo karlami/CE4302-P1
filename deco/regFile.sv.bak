@@ -2,15 +2,15 @@ module regFile (
   input clk, 
   input rst, 
   input writeEn,
-  input [15:0] src1, 
-  input [15:0] src2, 
-  input [15:0] dest,
+  input [15:0] _x, 
+  input [15:0] _b, 
+  input [15:0] y,
   input [15:0] writeVal,
-  output [15:0] reg1, 
-  output [15:0] reg2);
+  output [15:0] x, 
+  output [15:0] _b);
 
-  reg [`REG_FILE_SIZE-1:0] regMem [0:11];
-  integer i;
+  // N registros de size 16
+  reg [15:0] regMem [0:N];
 
   always @ (negedge clk, posedge rst) begin
     if (rst) regMem <= '{ default: '0};

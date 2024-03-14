@@ -20,3 +20,4 @@ module regFile (
   assign reg1 = (regMem[src1]);
   assign reg2 = (regMem[src2]);
 endmodule // regFile
+

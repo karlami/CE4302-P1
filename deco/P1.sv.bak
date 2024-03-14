@@ -9,7 +9,7 @@ module regFile (
   output [15:0] reg1, 
   output [15:0] reg2);
 
-  reg [REG_FILE_SIZE-1:0] regMem [0:11];
+  reg [`REG_FILE_SIZE-1:0] regMem [0:11];
   integer i;
 
   always @ (negedge clk, posedge rst) begin
