@@ -1,7 +1,6 @@
 module Control_Unit_Decode(input logic [4:0] Opcode, input logic clk, rst,
 						  output logic [3:0] ALUOp, 
-						  output logic RegDst,ALUSrc,MemRead,MemWrite,MemtoReg,RegWrite,Branch,BranchOp,RegSrc1,RegSrc2,ALUDest,
-						  output logic Vector_Op,PF_op,ImmSrc,Integer_op);
+						  output logic RegDst,ALUSrc,MemRead,MemWrite,MemtoReg,RegWrite,Branch,BranchOp,RegSrc1,RegSrc2,ALUDest);
 	
 	always_ff @(posedge clk or posedge rst) begin
 
@@ -18,10 +17,6 @@ module Control_Unit_Decode(input logic [4:0] Opcode, input logic clk, rst,
 			Branch <= 0;			
 			BranchOp <= 1'b0; 	
 			ALUDest<= 1'b0;
-			Vector_Op<= 1'b0;
-			PF_op <= 1'b0;
-			ImmSrc <= 1'b0;
-			Integer_op <= 1'b0;
 		end 
 
 		else begin 
@@ -40,11 +35,6 @@ module Control_Unit_Decode(input logic [4:0] Opcode, input logic clk, rst,
 				Branch <= 0;			//Indicar si es un branch
 				BranchOp <= 1'b0; 	//Indicar si es un B o BLT 		
 				ALUDest<= 1'b1;		//Escribo en un registro es 1 sino es 0 
-				
-				Vector_Op<= 1'b0;    //Es una operacion vectorial
-				PF_op <= 1'b0;			//Es un operacion Punto Fijo
-				ImmSrc <= 1'b0;		//Es un inmediatos
-				Integer_op <= 1'b1; 
 				end
 				
 				// Operador G3_SUB,#2
@@ -61,11 +51,6 @@ module Control_Unit_Decode(input logic [4:0] Opcode, input logic clk, rst,
 				Branch <= 0;			//Indicar si es un branch
 				BranchOp <= 1'b0; 	//Indicar si es un B o BLT 		
 				ALUDest<= 1'b1;		//Escribo en un registro es 1 sino es 0 
-				
-				Vector_Op<= 1'b0;
-				PF_op <= 1'b0;
-				ImmSrc <= 1'b0;
-				Integer_op <= 1'b1;
 				end
 				
 							
@@ -83,11 +68,6 @@ module Control_Unit_Decode(input logic [4:0] Opcode, input logic clk, rst,
 				Branch <= 0;			//Indicar si es un branch
 				BranchOp <= 1'b0; 	//Indicar si es un B o BLT 		
 				ALUDest<= 1'b1;		//Escribo en un registro es 1 sino es 0 
-				
-				Vector_Op<= 1'b0;
-				PF_op <= 1'b0;
-				ImmSrc <= 1'b0;
-				Integer_op <= 1'b1;
 				end
 				
 						
@@ -106,11 +86,6 @@ module Control_Unit_Decode(input logic [4:0] Opcode, input logic clk, rst,
 				Branch <= 0;			//Indicar si es un branch
 				BranchOp <= 1'b0; 	//Indicar si es un B o BLT 		
 				ALUDest<= 1'b1;		//Escribo en un registro es 1 sino es 0 
-				
-				Vector_Op<= 1'b0;
-				PF_op <= 1'b0;
-				ImmSrc <= 1'b0;
-				Integer_op <= 1'b1;	
 				end
 				
 				
@@ -130,14 +105,11 @@ module Control_Unit_Decode(input logic [4:0] Opcode, input logic clk, rst,
 				Branch <= 0;			//Indicar si es un branch
 				BranchOp <= 1'b0; 	//Indicar si es un B o BLT 		
 				ALUDest<= 1'b1;		//Escribo en un registro es 1 sino es 0 
-				
-				Vector_Op<= 1'b0;
-				PF_op <= 1'b0;
-				ImmSrc <= 1'b0;
-				Integer_op <= 1'b1;
 				end
 				
-
+				
+						
+				
 				// G3_FADD, #6
 				5'b01000: begin
 				RegDst <= 1; 	
@@ -152,11 +124,6 @@ module Control_Unit_Decode(input logic [4:0] Opcode, input logic clk, rst,
 				Branch <= 0;			//Indicar si es un branch
 				BranchOp <= 1'b0; 	//Indicar si es un B o BLT 		
 				ALUDest<= 1'b1;		//Escribo en un registro es 1 sino es 0 
-				
-				Vector_Op<= 1'b0;
-				PF_op <= 1'b1;
-				ImmSrc <= 1'b0;
-				Integer_op <= 1'b0;
 				end
 				
 				
@@ -174,12 +141,9 @@ module Control_Unit_Decode(input logic [4:0] Opcode, input logic clk, rst,
 				Branch <= 0;			//Indicar si es un branch
 				BranchOp <= 1'b0; 	//Indicar si es un B o BLT 		
 				ALUDest<= 1'b1;		//Escribo en un registro es 1 sino es 0 
-				
-				Vector_Op<= 1'b0;
-				PF_op <= 1'b1;
-				ImmSrc <= 1'b0;
-				Integer_op <= 1'b0;
 				end
+				
+				
 				
 
 				//G3_FMUL,#8
@@ -196,12 +160,9 @@ module Control_Unit_Decode(input logic [4:0] Opcode, input logic clk, rst,
 				Branch <= 0;			//Indicar si es un branch
 				BranchOp <= 1'b0; 	//Indicar si es un B o BLT 		
 				ALUDest<= 1'b1;		//Escribo en un registro es 1 sino es 0 
-				
-				Vector_Op<= 1'b0;
-				PF_op <= 1'b1;
-				ImmSrc <= 1'b0;
-				Integer_op <= 1'b0;
 				end
+				
+				
 				
 
 				//G3_ FLDR,#9
@@ -218,12 +179,9 @@ module Control_Unit_Decode(input logic [4:0] Opcode, input logic clk, rst,
 				Branch <= 0;			//Indicar si es un branch
 				BranchOp <= 1'b0; 	//Indicar si es un B o BLT 		
 				ALUDest<= 1'b1;		//Escribo en un registro es 1 sino es 0 
-				
-				Vector_Op<= 1'b0;
-				PF_op <= 1'b1;
-				ImmSrc <= 1'b0;
-				Integer_op <= 1'b0;
 				end
+				
+				
 				
 
 				//G3_ FSTR, #10
@@ -240,11 +198,6 @@ module Control_Unit_Decode(input logic [4:0] Opcode, input logic clk, rst,
 				Branch <= 0;			//Indicar si es un branch
 				BranchOp <= 1'b0; 	//Indicar si es un B o BLT 		
 				ALUDest<= 1'b1;		//Escribo en un registro es 1 sino es 0 
-				
-				Vector_Op<= 1'b0;
-				PF_op <= 1'b1;
-				ImmSrc <= 1'b0;
-				Integer_op <= 1'b0;
 				end
 				
 				
@@ -263,13 +216,10 @@ module Control_Unit_Decode(input logic [4:0] Opcode, input logic clk, rst,
 				Branch <= 0;			//Indicar si es un branch
 				BranchOp <= 1'b0; 	//Indicar si es un B o BLT 		
 				ALUDest<= 1'b1;		//Escribo en un registro es 1 sino es 0 
-				
-				Vector_Op<= 1'b1;
-				PF_op <= 1'b0;
-				ImmSrc <= 1'b0;
-				Integer_op <= 1'b0;
 				end
 				
+				
+
 				//G3_VSUB,#12
 				5'b10001: begin
 				RegDst <= 1; 			
@@ -284,12 +234,9 @@ module Control_Unit_Decode(input logic [4:0] Opcode, input logic clk, rst,
 				Branch <= 0;			//Indicar si es un branch
 				BranchOp <= 1'b0; 	//Indicar si es un B o BLT 		
 				ALUDest<= 1'b1;		//Escribo en un registro es 1 sino es 0 
-				
-				Vector_Op<= 1'b1;
-				PF_op <= 1'b0;
-				ImmSrc <= 1'b0;
-				Integer_op <= 1'b0;
 				end
+				
+				
 						
 				//G3_VMUL,#13
 				5'b10010: begin
@@ -305,14 +252,10 @@ module Control_Unit_Decode(input logic [4:0] Opcode, input logic clk, rst,
 				Branch <= 0;			//Indicar si es un branch
 				BranchOp <= 1'b0; 	//Indicar si es un B o BLT 		
 				ALUDest<= 1'b1;		//Escribo en un registro es 1 sino es 0 
-				
-				Vector_Op<= 1'b1;
-				PF_op <= 1'b0;
-				ImmSrc <= 1'b0;
-				Integer_op <= 1'b0;
 				end
 				
-	
+				
+						
 				//G3_ VLDR,#14
 				5'b10100: begin
 				RegDst <= 1; 		
@@ -327,13 +270,10 @@ module Control_Unit_Decode(input logic [4:0] Opcode, input logic clk, rst,
 				Branch <= 0;			//Indicar si es un branch
 				BranchOp <= 1'b0; 	//Indicar si es un B o BLT 		
 				ALUDest<= 1'b1;		//Escribo en un registro es 1 sino es 0 
-				
-				Vector_Op<= 1'b1;
-				PF_op <= 1'b0;
-				ImmSrc <= 1'b0;
-				Integer_op <= 1'b0;
 				end
 				
+				
+						
 				//G3_ VSTR, #15
 				5'b 10101: begin
 				RegDst <= 1; 		
@@ -348,12 +288,9 @@ module Control_Unit_Decode(input logic [4:0] Opcode, input logic clk, rst,
 				Branch <= 0;			//Indicar si es un branch
 				BranchOp <= 1'b0; 	//Indicar si es un B o BLT 		
 				ALUDest<= 1'b1;		//Escribo en un registro es 1 sino es 0 
-				
-				Vector_Op<= 1'b1;
-				PF_op <= 1'b0;
-				ImmSrc <= 1'b0;
-				Integer_op <= 1'b0;
 				end
+				
+				
 						
 				//G3_MOVI, #16
 				5'b 11000: begin
@@ -369,13 +306,11 @@ module Control_Unit_Decode(input logic [4:0] Opcode, input logic clk, rst,
 				Branch <= 0;			//Indicar si es un branch
 				BranchOp <= 1'b0; 	//Indicar si es un B o BLT 		
 				ALUDest<= 1'b1;		//Escribo en un registro es 1 sino es 0 
-				
-				Vector_Op<= 1'b0;
-				PF_op <= 1'b0;
-				ImmSrc <= 1'b0;
-				Integer_op <= 1'b0;
 				end
-					
+				
+				
+				
+						
 				//G3_ MOVR,#17
 				5'b 11001: begin
 				RegDst <= 1; 			
@@ -390,12 +325,9 @@ module Control_Unit_Decode(input logic [4:0] Opcode, input logic clk, rst,
 				Branch <= 0;			//Indicar si es un branch
 				BranchOp <= 1'b0; 	//Indicar si es un B o BLT 		
 				ALUDest<= 1'b1;		//Escribo en un registro es 1 sino es 0 
-				
-				Vector_Op<= 1'b0;
-				PF_op <= 1'b0;
-				ImmSrc <= 1'b0;
-				Integer_op <= 1'b0;
 				end
+				
+				
 						
 				//G3_CMP,#18
 				5'b 11100: begin
@@ -411,12 +343,8 @@ module Control_Unit_Decode(input logic [4:0] Opcode, input logic clk, rst,
 				Branch <= 0;			//Indicar si es un branch
 				BranchOp <= 1'b0; 	//Indicar si es un B o BLT 		
 				ALUDest<= 1'b1;		//Escribo en un registro es 1 sino es 0 
-				
-				Vector_Op<= 1'b0;
-				PF_op <= 1'b0;
-				ImmSrc <= 1'b0;
-				Integer_op <= 1'b0;
 				end
+				
 				
 						
 				//G3_B,#19
@@ -433,13 +361,11 @@ module Control_Unit_Decode(input logic [4:0] Opcode, input logic clk, rst,
 				Branch <= 0;			//Indicar si es un branch
 				BranchOp <= 1'b0; 	//Indicar si es un B o BLT 		
 				ALUDest<= 1'b1;		//Escribo en un registro es 1 sino es 0 
-				
-				Vector_Op<= 1'b0;
-				PF_op <= 1'b0;
-				ImmSrc <= 1'b0;
-				Integer_op <= 1'b0;
 				end
 				
+				
+				
+		
 				
 				//G3_BLT,#20
 				5'b 11110: begin
@@ -455,11 +381,6 @@ module Control_Unit_Decode(input logic [4:0] Opcode, input logic clk, rst,
 				Branch <= 0;			//Indicar si es un branch
 				BranchOp <= 1'b0; 	//Indicar si es un B o BLT 		
 				ALUDest<= 1'b1;		//Escribo en un registro es 1 sino es 0 
-				
-				Vector_Op<= 1'b0;
-				PF_op <= 1'b0;
-				ImmSrc <= 1'b0;
-				Integer_op <= 1'b0;
 				end
 				
 				
@@ -476,10 +397,6 @@ module Control_Unit_Decode(input logic [4:0] Opcode, input logic clk, rst,
 				Branch <= 1'bx;			//Indicar si es un branch
 				BranchOp <= 1'bx; 	//Indicar si es un B o BLT 		
 				ALUDest<= 1'bx;		//Escribo en un registro es 1 sino es 0 
-				Vector_Op<= 1'bx;
-				PF_op <= 1'bx;
-				ImmSrc <= 1'bx;
-				Integer_op <= 1'bx;
 				end 
 				
 			endcase
