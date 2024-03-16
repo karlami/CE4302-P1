@@ -1,4 +1,5 @@
-module Control_Unit_Decode(input logic [4:0] Opcode, input logic clk, rst,
+module Control_Unit_Decode(input logic [4:0] Opcode, 
+						  input logic clk, rst,
 						  output logic [3:0] ALUOp, 
 						  output logic RegDst,ALUSrc,MemRead,MemWrite,MemtoReg,RegWrite,Branch,BranchOp,RegSrc1,RegSrc2,ALUDest,
 						  output logic Vector_Op,PF_op,ImmSrc,Integer_op);
@@ -52,7 +53,7 @@ module Control_Unit_Decode(input logic [4:0] Opcode, input logic clk, rst,
 				RegDst <= 1; 		
 				RegSrc1 <= 1'b1;
 				RegSrc2 <= 1'b1;
-				ALUOp <= 4'b0000; 	//Todavia no estan las ALUS por lo tanto no se cual operacion es por lo tanto, es 0000 en todas	
+				ALUOp <= 4'b0001; 	//Todavia no estan las ALUS por lo tanto no se cual operacion es por lo tanto, es 0000 en todas	
 				ALUSrc <= 0; 	 		//Como no trabajamos con inmediatos el ALUSrc es siempre CERO		
 				MemRead <= 0;			//Leer de memoria 			
 				MemWrite <= 0;			//Escribir en memoria
@@ -92,7 +93,7 @@ module Control_Unit_Decode(input logic [4:0] Opcode, input logic clk, rst,
 				
 						
 				
-				//Operador G3_ LDR,#4
+				//Operador G3_LDR,#4
 				5'b00100: begin
 				RegDst <= 1; 		
 				RegSrc1 <= 1'b1;
@@ -204,7 +205,7 @@ module Control_Unit_Decode(input logic [4:0] Opcode, input logic clk, rst,
 				end
 				
 
-				//G3_ FLDR,#9
+				//G3_FLDR,#9
 				5'b01100: begin
 				RegDst <= 1; 		//G3_ADD r0, r1, r2, señalar que tiene que escribir en el registro R0	
 				RegSrc1 <= 1'b1;
@@ -313,7 +314,7 @@ module Control_Unit_Decode(input logic [4:0] Opcode, input logic clk, rst,
 				end
 				
 	
-				//G3_ VLDR,#14
+				//G3_VLDR,#14
 				5'b10100: begin
 				RegDst <= 1; 		
 				RegSrc1 <= 1'b1;
@@ -356,7 +357,7 @@ module Control_Unit_Decode(input logic [4:0] Opcode, input logic clk, rst,
 				end
 						
 				//G3_MOVI, #16
-				5'b 11000: begin
+				5'b11000: begin
 				RegDst <= 1; 		
 				RegSrc1 <= 1'b1;
 				RegSrc2 <= 1'b1;
@@ -377,7 +378,7 @@ module Control_Unit_Decode(input logic [4:0] Opcode, input logic clk, rst,
 				end
 					
 				//G3_ MOVR,#17
-				5'b 11001: begin
+				5'b11001: begin
 				RegDst <= 1; 			
 				RegSrc1 <= 1'b1;
 				RegSrc2 <= 1'b1;
@@ -398,7 +399,7 @@ module Control_Unit_Decode(input logic [4:0] Opcode, input logic clk, rst,
 				end
 						
 				//G3_CMP,#18
-				5'b 11100: begin
+				5'b11100: begin
 				RegDst <= 1; 		
 				RegSrc1 <= 1'b1;
 				RegSrc2 <= 1'b1;
@@ -420,11 +421,11 @@ module Control_Unit_Decode(input logic [4:0] Opcode, input logic clk, rst,
 				
 						
 				//G3_B,#19
-				5'b 11101: begin
+				5'b11101: begin
 				RegDst <= 1; 		
 				RegSrc1 <= 1'b1;
 				RegSrc2 <= 1'b1;
-				ALUOp <= 4'b0000; 	//Todavia no estan las ALUS por lo tanto no se cual operacion es por lo tanto, es 0000 en todas	
+				ALUOp <= 4'b0100; 	//Todavia no estan las ALUS por lo tanto no se cual operacion es por lo tanto, es 0000 en todas	
 				ALUSrc <= 0; 	 		//Como no trabajamos con inmediatos el ALUSrc es siempre CERO		
 				MemRead <= 0;			//Leer de memoria 			
 				MemWrite <= 0;			//Escribir en memoria
@@ -442,7 +443,7 @@ module Control_Unit_Decode(input logic [4:0] Opcode, input logic clk, rst,
 				
 				
 				//G3_BLT,#20
-				5'b 11110: begin
+				5'b11110: begin
 				RegDst <= 1; 		
 				RegSrc1 <= 1'b1;
 				RegSrc2 <= 1'b1;
