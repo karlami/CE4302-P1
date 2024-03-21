@@ -24,6 +24,38 @@ module Decode (instruction, x, b, _x, _b, y);
 	 .out(_b)
 );
 
+  vector_control_unit vcu(
+	 .Opcode(instruction[31:26]),
+	 .ALU_Vectorial(), 
+	 .VectDst(),
+	 .Vector_Read(),
+	 .MemWrite_vector(),
+	 .Vect_Write(),
+	 .Vect_Src1(),
+	 .Vect_Src2()
+  );
+  
+  Control_Unit_Decode cud(
+	 .Opcode(),
+	 .ALUOp(), 
+	 .RegDst(),
+	 .ALUSrc(),
+	 .MemRead(),
+	 .MemWrite(),
+	 .MemtoReg(),
+	 .RegWrite(),
+	 .Branch(),
+	 .BranchOp(),
+	 .RegSrc1(),
+	 .RegSrc2(),
+	 .ALUDest(),
+	 .PF_op(),
+	 .ImmSrc(),
+	 .Integer_op()
+  );
+  
+
+
 	// 19 bits o 27
   signExtendImm signExtend_I(
     .in(instruction[18:0]),
