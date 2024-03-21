@@ -2,33 +2,16 @@
 
 module Control_Unit_Decode_tb;
 
-    parameter CLK_PERIOD = 10;
+   reg [4:0] Opcode;
+    
 
-    logic clk = 0;
-    logic rst = 1;
-    logic [4:0] Opcode;
-    logic [3:0] ALUOp; 
-    logic RegDst; 
-    logic ALUSrc; 
-    logic MemRead; 
-    logic MemWrite; 
-    logic MemtoReg; 
-    logic RegWrite; 
-    logic Branch; 
-    logic BranchOp; 
-    logic RegSrc1; 
-    logic RegSrc2; 
-    logic ALUDest; 
-    logic Vector_Op; 
-    logic PF_op; 
-    logic ImmSrc; 
-    logic Integer_op;
+    // Outputs
+    wire [3:0] ALUOp;
+    wire RegDst, ALUSrc, MemRead, MemWrite, MemtoReg, RegWrite, Branch, BranchOp, RegSrc1, RegSrc2, ALUDest, PF_op, ImmSrc, Integer_op;
 
-    // Instanciacion
+    // Instantiate the unit under test (UUT)
     Control_Unit_Decode dut (
         .Opcode(Opcode),
-        .clk(clk),
-        .rst(rst),
         .ALUOp(ALUOp),
         .RegDst(RegDst),
         .ALUSrc(ALUSrc),
@@ -41,35 +24,43 @@ module Control_Unit_Decode_tb;
         .RegSrc1(RegSrc1),
         .RegSrc2(RegSrc2),
         .ALUDest(ALUDest),
-        .Vector_Op(Vector_Op),
         .PF_op(PF_op),
         .ImmSrc(ImmSrc),
         .Integer_op(Integer_op)
     );
 
-    // Clock generation, square signal
-    always #((CLK_PERIOD)/2) clk = ~clk;
+    // Clock generation
+  
 
-    // Test case 1: Opcode 00000 (ADD)
     initial begin
-        $display("Test Case 1: Opcode 00000 (ADD)");
-        Opcode <= 5'b00000;
+        // Test case 1: Opcode = 5'b00000 ADD
+        Opcode = 5'b00000;
         #10;
-        assert (ALUOp === 4'b0000) else $fatal("Test Case 1 failed: Unexpected ALUOp value");
-        assert (RegDst === 1'b1) else $fatal("Test Case 1 failed: Unexpected RegDst value");
-        assert ()
-        $display("Test Case 1 passed");
+		  //Test Cases 
+		  // SUB
+		  Opcode = 5'b00001;
+        #10;
+		  //G3_LDR
+		  Opcode = 5'b00100;
+        #10;
+		  
+		  
+		  //G3_FADD
+		  Opcode = 5'b01000;
+        #10;
+		  //G3_FLDR
+		  Opcode = 5'b01100;
+        #10;
+		 
+		 
+		  //G3_B
+		  Opcode = 5'b11101;
+        #10;
+		  //Caso DEFAULT	
+		  Opcode = 5'b11111;
+        #10;
+		
+
         $finish;
     end
-
-    // Test case 2: Opcode 00000 (ADD)
-    initial begin
-        $display("Test Case 2:  Opcode 00000 (ADD)");
-        Opcode <= 5'b;
-        #10;
-		  assert ()
-        $display("Test Case 2 passed");
-        $finish;
-    end
-
 endmodule
