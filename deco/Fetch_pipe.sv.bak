@@ -1,0 +1,32 @@
+ module Fetch_pipe (input logic clk, Reset, input logic [31:0] pc_out, Instr,
+					output logic [31:0] pc,
+					output logic [4:0] Opcode, //OPCODE, 5 bits
+					output logic [4:0] Instr25_21, //Rdest
+					output logic [4:0] Instr20_16, //Rsrc1
+					output logic [4:0] Instr15_11, //Rsrc2
+					output logic [25:0] Instr25_0, //Address
+					output logic [15:0] Instr15_0);//Imm
+
+	always_ff@(negedge clk, posedge Reset)
+		if(Reset)
+			begin
+				pc = 0;
+				Opcode = 0;
+				Instr25_21 = 0;
+				Instr20_16 = 0;
+				Instr15_11 = 0;
+				Instr25_0 = 0;
+				Instr15_0 = 0;
+			end
+		else 
+			begin
+			   //Control
+				pc = pc_out;
+				Opcode = Instr[31:26];
+				Instr25_21 = Instr[25:21];
+				Instr20_16 = Instr[20:16];
+				Instr15_11 = Instr[15:11];
+				Instr25_0 = Instr[25:0];
+				Instr15_0 = Instr[15:0];
+			end
+endmodule
