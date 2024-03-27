@@ -318,7 +318,6 @@ module tb_ALU_Integer;
 			$display ($sformatf("Exito para A = %b, B = %b", A, B));
 		else $error($sformatf("Fallo para A = %b, B = %b, Se obtuvo O = %b, y se esperaba O = %b", A, B, Out, OutExpected));
 		
-		$finish;
 		
 	end
 	
