@@ -1,7 +1,7 @@
 module register_file_vectorial #(
-    parameter WIDTH = 32,
+    parameter WIDTH = 16,
     parameter VECTOR_SIZE = 16,
-    parameter NUM_VECTORES = 8
+    parameter NUM_VECTORES = 16
 )(
     input clk, we3,
     input [$clog2(NUM_VECTORES)-1:0] v1,
