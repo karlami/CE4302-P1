@@ -1,6 +1,6 @@
 module register_file_escalar #(
     parameter REGISTERS = 32,
-    WIDTH = 32
+    WIDTH = 16
 ) (
     input clk,
     we3,
