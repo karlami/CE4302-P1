@@ -1,17 +1,11 @@
-module signExtendImm #(parameter integer N)
-(
-  input [N-1:0] in,
-  output [N-1:0] out
+module signExtendImm (
+    input signed [18:0] in,    // 19-bit immediate value input
+    output signed [31:0] out   // 32-bit extended output
 );
-  // Extensión de signo
-  // si el bit más significativo (in[N]) es 1, se extiende el signo 
-  // añadiendo 1 en los bits adicionales, y si es 0, se extiende con 0
+
+  // Sign extension
   always @* begin
-    if (in[N] == 1) begin
-        out = {N-8{1'b1}, in};
-    end else begin
-        out = {N-8{1'b0}, in};
-    end
-end
+    out = {{12{in[18]}}, in};  // Repeat the most significant bit of 'in' 12 times and concatenate 'in'
+  end
 
 endmodule // signExtendImm
