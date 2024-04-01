@@ -1,5 +1,5 @@
-//Se define un tamaño de 8 para poder manejar numeros de hasta +-127
-module ALU_Integer #(parameter DATA_WIDTH = 8)( 
+//Se define un tamaño de 16 para poder manejar numeros de hasta +-127
+module ALU_Integer #(parameter DATA_WIDTH = 16)( 
     input reg signed [DATA_WIDTH-1:0] A,
 	 input reg signed [DATA_WIDTH-1:0] B,
 	 input logic [1:0] opcode,
