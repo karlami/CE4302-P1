@@ -8,21 +8,21 @@ module Decode (instruction, x, b, _x, _b, y);
   output logic [6:0] y;
 
 
-  _mux #() mux_x (
+ // _mux #() mux_x (
     
-	 .in1(instruction[n:b]),
-    .in2(instruction[n:b]),
-    .sel(),
-    .out(_x)
-  );
+	// .in1(instruction[n:b]),
+   // .in2(instruction[n:b]),
+   /// .sel(),
+   // .out(_x)
+  //);
   
-  _mux #() mux_b (
+  //_mux #() mux_b (
  
-	 .in1(instruction[n:b]),
-	 .in2(instruction[n:b]),
-	 .sel(),
-	 .out(_b)
-);
+	 ///.in1(instruction[n:b]),
+	 //.in2(instruction[n:b]),
+	 //.sel(),
+	 //.out(_b)
+//);
 
   vector_control_unit vcu(
 	 .Opcode(instruction[31:26]),
@@ -63,5 +63,5 @@ module Decode (instruction, x, b, _x, _b, y);
   );
 
   // rango de bits de la instruccion para registro dest
-  assign dest = instruction[n:b];
+  //assign dest = instruction[n:b];
 endmodule // Decode_Stage
