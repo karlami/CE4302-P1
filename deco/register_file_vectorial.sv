@@ -8,7 +8,7 @@ module register_file_vectorial #(
     input [$clog2(NUM_VECTORES)-1:0] v2,
     input [$clog2(NUM_VECTORES)-1:0] v3,
 	 //Saca los datos 1 por 1 o los 16 de un solo?
-    input [WIDTH-1:0] wd3,
+    input [WIDTH-1:0] wd3[VECTOR_SIZE-1:0],
     output [WIDTH-1:0] vd1[VECTOR_SIZE-1:0],
     output [WIDTH-1:0] vd2[VECTOR_SIZE-1:0]
 );
@@ -53,7 +53,7 @@ module register_file_vectorial #(
 	 always @ (posedge clk) begin
         if (we3) begin
             for (int i = 0; i < VECTOR_SIZE; i = i + 1) begin
-                vector[v3][i] <= wd3;
+                vector[v3] <= wd3;
             end
         end
     end

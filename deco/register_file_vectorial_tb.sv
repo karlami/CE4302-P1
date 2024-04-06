@@ -13,7 +13,7 @@ module register_file_vectorial_tb;
   reg [$clog2(NUM_VECTORES)-1:0] v1;
   reg [$clog2(NUM_VECTORES)-1:0] v2;
   reg [$clog2(NUM_VECTORES)-1:0] v3;
-  reg [WIDTH-1:0] wd3;
+  reg [WIDTH-1:0] wd3[VECTOR_SIZE-1:0];
   wire [WIDTH-1:0] vd1[VECTOR_SIZE-1:0];
   wire [WIDTH-1:0] vd2[VECTOR_SIZE-1:0];
 
@@ -43,7 +43,22 @@ module register_file_vectorial_tb;
 	 clk = 0;
     we3 = 1;
 	 v3 =2;
-    wd3 = 32'hABCDEFFF; // Dato de escritura
+    wd3[0] = 32'hABCDEFFF;
+	 wd3[1] = 32'hABCDEFFF;
+	 wd3[2] = 32'hABCDEFFF;
+	 wd3[3] = 32'hABCDEFFF;
+	 wd3[4] = 32'hABCDEFFF;
+	 wd3[5] = 32'hABCDEFFF;
+	 wd3[6] = 32'hABCDEFFF;
+	 wd3[7] = 32'hABCDEFFF;
+	 wd3[8] = 32'hABCDEFFF;
+	 wd3[9] = 32'hABCDEFFF;
+	 wd3[10] = 32'hABCDEFFF;
+	 wd3[11] = 32'hABCDEFFF;
+	 wd3[12] = 32'hABCDEFFF;
+	 wd3[13] = 32'hABCDEFFF;
+	 wd3[14] = 32'hABCDEFFF;
+	 wd3[15] = 32'hABCDEFFF;
     #10;
 	 
 	 we3 = 0;
@@ -54,7 +69,22 @@ module register_file_vectorial_tb;
 	 //Otra escritura
 	 we3 = 1;
 	 v3 = 4;
-	 wd3 = 32'h11111111; // Dato de escritura
+	 wd3[0] = 32'h11111111;
+	 wd3[1] = 32'h11111111;
+	 wd3[2] = 32'h11111111;
+	 wd3[3] = 32'h11111111;
+	 wd3[4] = 32'h11111111;
+	 wd3[5] = 32'h11111111;
+	 wd3[6] = 32'h11111111;
+	 wd3[7] = 32'h11111111;
+	 wd3[8] = 32'h11111111;
+	 wd3[9] = 32'h11111111;
+	 wd3[10] = 32'h11111111;
+	 wd3[11] = 32'h11111111;
+	 wd3[12] = 32'h11111111;
+	 wd3[13] = 32'h11111111;
+	 wd3[14] = 32'h11111111;
+	 wd3[15] = 32'h11111111;// Dato de escritura
 	 #10;
 	 
 	 we3 = 0;
