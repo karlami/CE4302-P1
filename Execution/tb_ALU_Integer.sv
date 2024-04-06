@@ -14,13 +14,14 @@ module tb_ALU_Integer;
 	// Outputs
 	reg signed [DATA_WIDTH-1:0] Out;
 	reg signed [DATA_WIDTH-1:0] OutExpected;
-	reg N, NExpected, V, VExpected, Z,ZExpected;
+	reg C, CExpected, N, NExpected, V, VExpected, Z,ZExpected;
 	
 	ALU_Integer #(.DATA_WIDTH(DATA_WIDTH)) Test(
     .A(A),
     .B(B),
 	 .opcode(opcode),
     .Out(Out),
+	 .C(C),
 	 .N(N),
 	 .V(V),
 	 .Z(Z)
@@ -35,6 +36,7 @@ module tb_ALU_Integer;
 		N = 0;
 		V = 0;
 		Z = 0;
+		CExpected=0;
 		
 		
 		$display ("=============SUMADOR=============");
@@ -51,8 +53,7 @@ module tb_ALU_Integer;
 		
 		#10
 		
-		assert (Out == OutExpected && ZExpected == Z && VExpected == V && NExpected == N) 
-			$display ($sformatf("Exito para A = %b, B = %b", A, B));
+		assert (Out == OutExpected && ZExpected == Z && VExpected == V && NExpected == N) $display ($sformatf("Exito para A = %b, B = %b", A, B));
 		else $error($sformatf("Fallo para A = %b, B = %b, Se obtuvo O = %b, y se esperaba O = %b", A, B, Out, OutExpected));
 		
 		//Caso suma 2 negativos
@@ -66,8 +67,7 @@ module tb_ALU_Integer;
 		
 		#10
 		
-		assert (Out == OutExpected && ZExpected == Z && VExpected == V && NExpected == N) 
-			$display ($sformatf("Exito para A = %b, B = %b", A, B));
+		assert (Out == OutExpected && ZExpected == Z && VExpected == V && NExpected == N) $display ($sformatf("Exito para A = %b, B = %b", A, B));
 		else $error($sformatf("Fallo para A = %b, B = %b, Se obtuvo O = %b, y se esperaba O = %b", A, B, Out, OutExpected));
 		
 		//Caso overflow positivos
@@ -81,8 +81,7 @@ module tb_ALU_Integer;
 		
 		#10
 		
-		assert (Out == OutExpected && ZExpected == Z && VExpected == V && NExpected == N) 
-			$display ($sformatf("Exito para A = %b, B = %b", A, B));
+		assert (Out == OutExpected && ZExpected == Z && VExpected == V && NExpected == N) $display ($sformatf("Exito para A = %b, B = %b", A, B));
 		else $error($sformatf("Fallo para A = %b, B = %b, Se obtuvo O = %b, y se esperaba O = %b", A, B, Out, OutExpected));
 		
 		//Caso overflow negativo
@@ -96,8 +95,7 @@ module tb_ALU_Integer;
 		
 		#10
 		
-		assert (Out == OutExpected && ZExpected == Z && VExpected == V && NExpected == N) 
-			$display ($sformatf("Exito para A = %b, B = %b", A, B));
+		assert (Out == OutExpected && ZExpected == Z && VExpected == V && NExpected == N) $display ($sformatf("Exito para A = %b, B = %b", A, B));
 		else $error($sformatf("Fallo para A = %b, B = %b, Se obtuvo O = %b, y se esperaba O = %b", A, B, Out, OutExpected));
 		
 		//Caso suma de positivo con negativo que da 0
@@ -111,8 +109,7 @@ module tb_ALU_Integer;
 		
 		#10
 		
-		assert (Out == OutExpected && ZExpected == Z && VExpected == V && NExpected == N) 
-			$display ($sformatf("Exito para A = %b, B = %b", A, B));
+		assert (Out == OutExpected && ZExpected == Z && VExpected == V && NExpected == N) $display ($sformatf("Exito para A = %b, B = %b", A, B));
 		else $error($sformatf("Fallo para A = %b, B = %b, Se obtuvo O = %b, y se esperaba O = %b", A, B, Out, OutExpected));
 		
 		//Caso suma de positivo con negativo que da positivo
@@ -126,8 +123,7 @@ module tb_ALU_Integer;
 		
 		#10
 		
-		assert (Out == OutExpected && ZExpected == Z && VExpected == V && NExpected == N) 
-			$display ($sformatf("Exito para A = %b, B = %b", A, B));
+		assert (Out == OutExpected && ZExpected == Z && VExpected == V && NExpected == N) $display ($sformatf("Exito para A = %b, B = %b", A, B));
 		else $error($sformatf("Fallo para A = %b, B = %b, Se obtuvo O = %b, y se esperaba O = %b", A, B, Out, OutExpected));
 		
 		
@@ -146,8 +142,7 @@ module tb_ALU_Integer;
 		
 		#10
 		
-		assert (Out == OutExpected && ZExpected == Z && VExpected == V && NExpected == N) 
-			$display ($sformatf("Exito para A = %b, B = %b", A, B));
+		assert (Out == OutExpected && ZExpected == Z && VExpected == V && NExpected == N) $display ($sformatf("Exito para A = %b, B = %b", A, B));
 		else $error($sformatf("Fallo para A = %b, B = %b, Se obtuvo O = %b, y se esperaba O = %b", A, B, Out, OutExpected));
 		
 		//Caso resta 2 negativos
@@ -161,8 +156,7 @@ module tb_ALU_Integer;
 		
 		#10
 		
-		assert (Out == OutExpected && ZExpected == Z && VExpected == V && NExpected == N) 
-			$display ($sformatf("Exito para A = %b, B = %b", A, B));
+		assert (Out == OutExpected && ZExpected == Z && VExpected == V && NExpected == N) $display ($sformatf("Exito para A = %b, B = %b", A, B));
 		else $error($sformatf("Fallo para A = %b, B = %b, Se obtuvo O = %b, y se esperaba O = %b", A, B, Out, OutExpected));
 		
 		//Caso overflow positivos
@@ -176,8 +170,7 @@ module tb_ALU_Integer;
 		
 		#10
 		
-		assert (Out == OutExpected && ZExpected == Z && VExpected == V && NExpected == N) 
-			$display ($sformatf("Exito para A = %b, B = %b", A, B));
+		assert (Out == OutExpected && ZExpected == Z && VExpected == V && NExpected == N) $display ($sformatf("Exito para A = %b, B = %b", A, B));
 		else $error($sformatf("Fallo para A = %b, B = %b, Se obtuvo O = %b, y se esperaba O = %b", A, B, Out, OutExpected));
 		
 		//Caso overflow negativo
@@ -191,8 +184,7 @@ module tb_ALU_Integer;
 		
 		#10
 		
-		assert (Out == OutExpected && ZExpected == Z && VExpected == V && NExpected == N) 
-			$display ($sformatf("Exito para A = %b, B = %b", A, B));
+		assert (Out == OutExpected && ZExpected == Z && VExpected == V && NExpected == N) $display ($sformatf("Exito para A = %b, B = %b", A, B));
 		else $error($sformatf("Fallo para A = %b, B = %b, Se obtuvo O = %b, y se esperaba O = %b", A, B, Out, OutExpected));
 		
 		//Caso resta de negativo con negativo que da 0
@@ -206,8 +198,7 @@ module tb_ALU_Integer;
 		
 		#10
 		
-		assert (Out == OutExpected && ZExpected == Z && VExpected == V && NExpected == N) 
-			$display ($sformatf("Exito para A = %b, B = %b", A, B));
+		assert (Out == OutExpected && ZExpected == Z && VExpected == V && NExpected == N) $display ($sformatf("Exito para A = %b, B = %b", A, B));
 		else $error($sformatf("Fallo para A = %b, B = %b, Se obtuvo O = %b, y se esperaba O = %b", A, B, Out, OutExpected));
 		
 		//Caso resta de positivo con positivo que da 0
@@ -221,8 +212,7 @@ module tb_ALU_Integer;
 		
 		#10
 		
-		assert (Out == OutExpected && ZExpected == Z && VExpected == V && NExpected == N) 
-			$display ($sformatf("Exito para A = %b, B = %b", A, B));
+		assert (Out == OutExpected && ZExpected == Z && VExpected == V && NExpected == N) $display ($sformatf("Exito para A = %b, B = %b", A, B));
 		else $error($sformatf("Fallo para A = %b, B = %b, Se obtuvo O = %b, y se esperaba O = %b", A, B, Out, OutExpected));
 		
 		$display ("==========MULTIPLICADOR===========");
@@ -239,8 +229,7 @@ module tb_ALU_Integer;
 		
 		#10
 		
-		assert (Out == OutExpected && ZExpected == Z && VExpected == V && NExpected == N) 
-			$display ($sformatf("Exito para A = %b, B = %b", A, B));
+		assert (Out == OutExpected && ZExpected == Z && VExpected == V && NExpected == N) $display ($sformatf("Exito para A = %b, B = %b", A, B));
 		else $error($sformatf("Fallo para A = %b, B = %b, Se obtuvo O = %b, y se esperaba O = %b", A, B, Out, OutExpected));
 		
 		//Caso multiplicacion de 1 negativo y 1 positivo
@@ -254,8 +243,7 @@ module tb_ALU_Integer;
 		
 		#10
 		
-		assert (Out == OutExpected && ZExpected == Z && VExpected == V && NExpected == N) 
-			$display ($sformatf("Exito para A = %b, B = %b", A, B));
+		assert (Out == OutExpected && ZExpected == Z && VExpected == V && NExpected == N) $display ($sformatf("Exito para A = %b, B = %b", A, B));
 		else $error($sformatf("Fallo para A = %b, B = %b, Se obtuvo O = %b, y se esperaba O = %b", A, B, Out, OutExpected));
 		
 		//Caso multiplicacion de 2 negativos
@@ -269,8 +257,7 @@ module tb_ALU_Integer;
 		
 		#10
 		
-		assert (Out == OutExpected && ZExpected == Z && VExpected == V && NExpected == N) 
-			$display ($sformatf("Exito para A = %b, B = %b", A, B));
+		assert (Out == OutExpected && ZExpected == Z && VExpected == V && NExpected == N) $display ($sformatf("Exito para A = %b, B = %b", A, B));
 		else $error($sformatf("Fallo para A = %b, B = %b, Se obtuvo O = %b, y se esperaba O = %b", A, B, Out, OutExpected));
 		
 		//Caso overflow positivos
@@ -284,8 +271,7 @@ module tb_ALU_Integer;
 		
 		#10
 		
-		assert (Out == OutExpected && ZExpected == Z && VExpected == V && NExpected == N) 
-			$display ($sformatf("Exito para A = %b, B = %b", A, B));
+		assert (Out == OutExpected && ZExpected == Z && VExpected == V && NExpected == N) $display ($sformatf("Exito para A = %b, B = %b", A, B));
 		else $error($sformatf("Fallo para A = %b, B = %b, Se obtuvo O = %b, y se esperaba O = %b", A, B, Out, OutExpected));
 		
 		//Caso overflow negativo
@@ -299,8 +285,7 @@ module tb_ALU_Integer;
 		
 		#10
 		
-		assert (Out == OutExpected && ZExpected == Z && VExpected == V && NExpected == N) 
-			$display ($sformatf("Exito para A = %b, B = %b", A, B));
+		assert (Out == OutExpected && ZExpected == Z && VExpected == V && NExpected == N) $display ($sformatf("Exito para A = %b, B = %b", A, B));
 		else $error($sformatf("Fallo para A = %b, B = %b, Se obtuvo O = %b, y se esperaba O = %b", A, B, Out, OutExpected));
 		
 		//Caso multiplicacion que da 0
@@ -314,8 +299,7 @@ module tb_ALU_Integer;
 		
 		#10
 		
-		assert (Out == OutExpected && ZExpected == Z && VExpected == V && NExpected == N) 
-			$display ($sformatf("Exito para A = %b, B = %b", A, B));
+		assert (Out == OutExpected && ZExpected == Z && VExpected == V && NExpected == N) $display ($sformatf("Exito para A = %b, B = %b", A, B));
 		else $error($sformatf("Fallo para A = %b, B = %b, Se obtuvo O = %b, y se esperaba O = %b", A, B, Out, OutExpected));
 		
 		

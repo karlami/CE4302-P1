@@ -4,6 +4,7 @@ module ALU_Integer #(parameter DATA_WIDTH = 16)(
 	 input reg signed [DATA_WIDTH-1:0] B,
 	 input logic [1:0] opcode,
     output reg signed [DATA_WIDTH-1:0] Out,
+	 output reg C, //Carry de fraccional a entero
 	 output reg N, //Negativo
 	 output reg V, //Overflow
 	 output reg Z  //Zero
@@ -68,6 +69,7 @@ module ALU_Integer #(parameter DATA_WIDTH = 16)(
 		endcase
 	end
 	
+	assign C = 0;
 	assign Out = temp_Out[DATA_WIDTH-1:0];
 	assign N   = Out[DATA_WIDTH-1];
 	assign Z   = ~|Out;

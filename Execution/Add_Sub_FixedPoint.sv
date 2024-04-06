@@ -1,12 +1,13 @@
 //Se define un tamaño de 16 para poder manejar numeros de punto fijo del tipo Q7.8
-module Add_Sub_FixedPoint #(parameter DATA_WIDTH = 16)( 
-    input  reg signed [DATA_WIDTH-1:0] A,
-	 input  reg signed [DATA_WIDTH-1:0] B,
-	 input  reg op,
-    output reg signed [DATA_WIDTH-1:0] Out,
-	 output reg N, //Negativo
-	 output reg V, //Overflow
-	 output reg Z  //Zero
+module Add_Sub_FixedPoint #(parameter DATA_WIDTH = 16)(
+	input  reg signed [DATA_WIDTH-1:0] A,
+	input  reg signed [DATA_WIDTH-1:0] B,
+	input  reg op,
+	output reg signed [DATA_WIDTH-1:0] Out,
+	output reg C, //Carry de fraccion a entero
+	output reg N, //Negativo
+	output reg V, //Overflow
+	output reg Z  //Zero
 );
 	
 	reg signed [DATA_WIDTH/2 - 1:0] Integer_A;
@@ -277,31 +278,235 @@ module Add_Sub_FixedPoint #(parameter DATA_WIDTH = 16)(
 					temp_Out_Integer = max_neg;
 				end
 				else begin
-						V=0;
-						temp_Out_Integer = temp_add[DATA_WIDTH/2-1:0];
-					end
+					V=0;
+					temp_Out_Integer = temp_add[DATA_WIDTH/2-1:0];
+				end
 				
 				temp_Out[DATA_WIDTH-1:DATA_WIDTH/2] = temp_Out_Integer[DATA_WIDTH/2-1:0];
 			end
-			/*
+			
 			//Casos de resta
-			({1'b0, 1'b0, 1'b0}):begin //Caso positiva - positivo
+			({1'b1, 1'b0, 1'b0}):begin //Casos 1 y 2: positiva - positivo
+				c = 0;
+				//Caso 1: positivo + positivo = positivo
+				if (abs_A_greater_or_equal_abs_B(Integer_A,Integer_B)) begin
+					//Logica parte fraccional
+					for (int i = 0; i < DATA_WIDTH/2; i++) begin
+						temp_Out_Fractional[i] = Fractional_A[i] ^ Fractional_B[i] ^ c;
+						
+						if((Fractional_A[i] < Fractional_B[i]) || (A[i] == 0 && B[i] == 0 && c))
+							c = 1;
+						else
+							c = 0;
+					end
+					
+					temp_Out[DATA_WIDTH/2 - 1:0] = temp_Out_Fractional[DATA_WIDTH/2-1:0];
+					
+					//Logica parte entera
+					temp_add = Integer_A - Integer_B;
+					temp_add = temp_add - c;
+					
+					if (temp_add[DATA_WIDTH-1] == 0 && temp_add >= max_pos) begin
+						V = 1;
+						temp_Out_Integer = max_pos;
+					end
+					else if (temp_add[DATA_WIDTH-1] == 1 && temp_add <= max_neg) begin
+						V = 1;
+						temp_Out_Integer = max_neg;
+					end
+					else begin
+						V=0;
+						temp_Out_Integer = temp_add[DATA_WIDTH/2-1:0];
+					end
+					
+					temp_Out[DATA_WIDTH-1:DATA_WIDTH/2] = temp_Out_Integer[DATA_WIDTH/2-1:0];
+	
+				end
+				//Caso 2: positivo + positivo = negativo
+				else begin
+					//Logica parte fraccional
+					for (int i = 0; i < DATA_WIDTH/2; i++) begin
+						temp_Out_Fractional[i] = Fractional_A[i] ^ Fractional_B[i] ^ c;
+							
+						if((Fractional_A[i] > Fractional_B[i]) || (A[i] == 0 && B[i] == 0 && c))
+							c = 1;
+						else
+							c = 0;
+					end
+					
+					temp_Out[DATA_WIDTH/2 - 1:0] = temp_Out_Fractional[DATA_WIDTH/2-1:0];
+
+					
+					//Logica parte entera
+					temp_add = Integer_A - Integer_B; 
+					temp_add = temp_add + c;
+					
+					if (temp_add[DATA_WIDTH-1] == 0 && temp_add >= max_pos) begin
+						V = 1;
+						temp_Out_Integer = max_pos;
+					end
+					else if (temp_add[DATA_WIDTH-1] == 1 && temp_add <= max_neg) begin
+						V = 1;
+						temp_Out_Integer = max_neg;
+					end
+					else begin
+						V=0;
+						temp_Out_Integer = temp_add[DATA_WIDTH/2-1:0];
+					end
+					
+					temp_Out[DATA_WIDTH-1:DATA_WIDTH/2] = temp_Out_Integer[DATA_WIDTH/2-1:0];
+	
+				end
 			end
-			({1'b0, 1'b0, 1'b1}):begin //Caso positivo - negativo
+			({1'b1, 1'b0, 1'b1}):begin //Caso 3: positivo - negativo
+				c = 0;
+					
+				//Logica parte fraccional
+				for (int i = 0; i < DATA_WIDTH/2; i++) begin
+					temp_Out_Fractional[i] = Fractional_A[i] ^ Fractional_B[i] ^ c;
+					
+					if((Fractional_A[i] && Fractional_B[i]) || (Fractional_A[i] && c) || (c && Fractional_B[i]))
+						c = 1;
+					else
+						c = 0;
+				end
+
+				temp_Out[DATA_WIDTH/2 - 1:0] = temp_Out_Fractional[DATA_WIDTH/2-1:0];
+				
+				//Logica parte entera
+				temp_add = Integer_A - Integer_B;
+				temp_add = temp_add + c;
+				
+				if (temp_add[DATA_WIDTH-1] == 0 && temp_add >= max_pos) begin
+					V = 1;
+					temp_Out_Integer = max_pos;
+				end
+				else if (temp_add[DATA_WIDTH-1] == 1 && temp_add <= max_neg) begin
+					V = 1;
+					temp_Out_Integer = max_neg;
+				end
+				else begin
+					V=0;
+					temp_Out_Integer = temp_add[DATA_WIDTH/2-1:0];
+				end
+				
+				temp_Out[DATA_WIDTH-1:DATA_WIDTH/2] = temp_Out_Integer[DATA_WIDTH/2-1:0];
 			end
-			({1'b0, 1'b1, 1'b0}):begin //Caso negativo - positivo
+			({1'b1, 1'b1, 1'b0}):begin //Caso 4: negativo - positivo
+				c = 0;
+				//Logica parte fraccional
+				for (int i = 0; i < DATA_WIDTH/2; i++) begin
+					temp_Out_Fractional[i] = Fractional_A[i] ^ Fractional_B[i] ^ c;
+					
+					if((Fractional_A[i] && Fractional_B[i]) || (Fractional_A[i] && c) || (c && Fractional_B[i]))
+						c = 1;
+					else
+						c = 0;
+				end
+
+				temp_Out[DATA_WIDTH/2 - 1:0] = temp_Out_Fractional[DATA_WIDTH/2-1:0];			
+				
+				//Logica parte entera
+				temp_add = Integer_A - Integer_B;
+				temp_add = temp_add - c;
+				
+				if (temp_add[DATA_WIDTH-1] == 0 && temp_add >= max_pos) begin
+					V = 1;
+					temp_Out_Integer = max_pos;
+				end
+				else if (temp_add[DATA_WIDTH-1] == 1 && temp_add <= max_neg) begin
+					V = 1;
+					temp_Out_Integer = max_neg;
+				end
+				else begin
+					V=0;
+					temp_Out_Integer = temp_add[DATA_WIDTH/2-1:0];
+				end
+				
+				temp_Out[DATA_WIDTH-1:DATA_WIDTH/2] = temp_Out_Integer[DATA_WIDTH/2-1:0];
 			end
-			({1'b0, 1'b1, 1'b1}):begin //Caso negativo - negativo
+			({1'b1, 1'b1, 1'b1}):begin //Casos 5 y 6: negativo - negativo
+				c = 0;
+				//Caso 5: negativo - negativo = negativo
+				if (abs_A_greater_or_equal_abs_B(Integer_A,Integer_B)) begin
+					//Logica parte fraccional
+					for (int i = 0; i < DATA_WIDTH/2; i++) begin
+						temp_Out_Fractional[i] = Fractional_A[i] ^ Fractional_B[i] ^ c;
+							
+						if((Fractional_B[i] > Fractional_A[i]) || (A[i] == 0 && B[i] == 0 && c == 1))
+							c = 1;
+						else
+							c = 0;
+					end
+					
+					temp_Out[DATA_WIDTH/2 - 1:0] = temp_Out_Fractional[DATA_WIDTH/2-1:0];
+					
+					//Logica parte entera
+					temp_add = Integer_A - Integer_B;
+					temp_add = temp_add + c;
+					
+					if (temp_add[DATA_WIDTH-1] == 0 && temp_add >= max_pos) begin
+						V = 1;
+						temp_Out_Integer = max_pos;
+					end
+					else if (temp_add[DATA_WIDTH-1] == 1 && temp_add <= max_neg) begin
+						V = 1;
+						temp_Out_Integer = max_neg;
+					end
+					else begin
+						V=0;
+						temp_Out_Integer = temp_add[DATA_WIDTH/2-1:0];
+					end
+					
+					temp_Out[DATA_WIDTH-1:DATA_WIDTH/2] = temp_Out_Integer[DATA_WIDTH/2-1:0];
+	
+				end
+				//Caso 6: negativo - negativo = positivo
+				else begin
+					//Logica parte fraccional
+					for (int i = 0; i < DATA_WIDTH/2; i++) begin
+						temp_Out_Fractional[i] = Fractional_A[i] ^ Fractional_B[i] ^ c;
+						
+						if((Fractional_A[i] > Fractional_B[i]) || (A[i] == 0 && B[i] == 0 && c))
+							c = 1;
+						else
+							c = 0;
+					end
+					
+					temp_Out[DATA_WIDTH/2 - 1:0] = temp_Out_Fractional[DATA_WIDTH/2-1:0];
+					
+					//Logica parte entera
+					temp_add = Integer_A - Integer_B;
+					temp_add = temp_add - c;
+					
+					if (temp_add[DATA_WIDTH-1] == 0 && temp_add >= max_pos) begin
+						V = 1;
+						temp_Out_Integer = max_pos;
+					end
+					else if (temp_add[DATA_WIDTH-1] == 1 && temp_add <= max_neg) begin
+						V = 1;
+						temp_Out_Integer = max_neg;
+					end
+					else begin
+						V=0;
+						temp_Out_Integer = temp_add[DATA_WIDTH/2-1:0];
+					end
+					
+					temp_Out[DATA_WIDTH-1:DATA_WIDTH/2] = temp_Out_Integer[DATA_WIDTH/2-1:0];
+					
+				end
 			end
-			*/
+			
 			
 			default: begin// Unsupported operation
 				temp_Out = 0;
+				c = 0;
 				V = 0;
 			end
 		endcase
 	end
 	
+	assign C = c;
 	assign Out = temp_Out;
 	assign N   = Out[DATA_WIDTH-1];
 	assign Z   = ~|Out;
