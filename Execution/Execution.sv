@@ -1,10 +1,10 @@
 module Execution #(parameter DATA_WIDTH = 16)(
-	input signed [DATA_WIDTH-1:0] A_deco_int,
-	input signed [DATA_WIDTH-1:0] B_deco_int,
-	input signed [DATA_WIDTH-1:0] A_deco_fixed,
-	input signed [DATA_WIDTH-1:0] B_deco_fixed,
-	input signed [DATA_WIDTH-1:0] A_deco_vector [DATA_WIDTH-1:0],
-	input signed [DATA_WIDTH-1:0] B_deco_vector [DATA_WIDTH-1:0],
+	input reg signed [DATA_WIDTH-1:0] A_deco_int,
+	input reg signed [DATA_WIDTH-1:0] B_deco_int,
+	input reg signed [DATA_WIDTH-1:0] A_deco_fixed,
+	input reg signed [DATA_WIDTH-1:0] B_deco_fixed,
+	input reg signed [DATA_WIDTH-1:0] A_deco_vector [DATA_WIDTH-1:0],
+	input reg signed [DATA_WIDTH-1:0] B_deco_vector [DATA_WIDTH-1:0],
 
 	input signed [DATA_WIDTH-1:0] A_ua_int,
 	input signed [DATA_WIDTH-1:0] B_ua_int,
@@ -16,23 +16,26 @@ module Execution #(parameter DATA_WIDTH = 16)(
 	input reg s_mux_A,
 	input reg s_mux_B,
 
-	input logic [4:0] opcode,
+	input reg [4:0] opcode,
 
 	output reg signed [DATA_WIDTH-1:0] Out_int,
 	output reg signed [DATA_WIDTH-1:0] Out_fixed,
 	output reg signed [DATA_WIDTH-1:0] Out_vector [DATA_WIDTH-1:0],
-
+	
+	output reg C_int,
 	output reg N_int,
 	output reg V_int,
 	output reg Z_int,
 	
+	output reg C_fixed,
 	output reg N_fixed,
 	output reg V_fixed,
 	output reg Z_fixed,
 
-	output reg [DATA_WIDTH-1:0] N_vector,
-	output reg [DATA_WIDTH-1:0] V_vector,
-	output reg [DATA_WIDTH-1:0] Z_vector
+	output reg C_vector [DATA_WIDTH-1:0],
+	output reg N_vector [DATA_WIDTH-1:0],
+	output reg V_vector [DATA_WIDTH-1:0],
+	output reg Z_vector [DATA_WIDTH-1:0]
 );
 
 	reg signed [DATA_WIDTH-1:0] A_int;
@@ -43,9 +46,9 @@ module Execution #(parameter DATA_WIDTH = 16)(
 	reg signed [DATA_WIDTH-1:0] B_vector [DATA_WIDTH-1:0];
 
 
-	logic [1:0] opcode_int;
-	logic [1:0] opcode_fixed;
-	logic [1:0] opcode_vector;
+	reg [1:0] opcode_int;
+	reg [1:0] opcode_fixed;
+	reg [1:0] opcode_vector;
 
 	mux2_1 #(.DATA_WIDTH(DATA_WIDTH)) mux_A_int(
 		.d0(A_deco_int),
@@ -88,14 +91,13 @@ module Execution #(parameter DATA_WIDTH = 16)(
 		.s(s_mux_B),
 		.out(B_vector)
 	);
-	
-	/*
 
 	ALU_Integer #(.DATA_WIDTH(DATA_WIDTH)) alu_int(
 		.A(A_int),
 		.B(B_int),
 		.opcode(opcode_int),
 		.Out(Out_int),
+		.C(C_int),
 		.N(N_int),
 		.V(V_int),
 		.Z(Z_int)
@@ -106,21 +108,22 @@ module Execution #(parameter DATA_WIDTH = 16)(
 		.B(B_fixed),
 		.opcode(opcode_fixed),
 		.Out(Out_fixed),
+		.C(C_fixed),
 		.N(N_fixed),
 		.V(V_fixed),
 		.Z(Z_fixed)
 	);
 	
-	ALU_Vector #(.DATA_WIDTH(DATA_WIDTH)) alu_vector(
+	ALU_Vectorial #(.DATA_WIDTH(DATA_WIDTH)) alu_vectorial(
 		.A(A_vector),
 		.B(B_vector),
 		.opcode(opcode_vector),
 		.Out(Out_vector),
+		.C(C_vector),
 		.N(N_vector),
 		.V(V_vector),
 		.Z(Z_vector)
 	);
-	*/
 
 	//ALU operations
 	always_comb begin
@@ -149,12 +152,12 @@ module Execution #(parameter DATA_WIDTH = 16)(
 				opcode_vector = 2'b11;
 			end
 			5'b01001: begin // SUB operation
-				opcode_fixed  = 2'b00;
+				opcode_fixed  = 2'b01;
 				opcode_int    = 2'b11;
 				opcode_vector = 2'b11;
 			end
 			5'b01010: begin // MUL operation
-				opcode_fixed  = 2'b00;
+				opcode_fixed  = 2'b10;
 				opcode_int    = 2'b11;
 				opcode_vector = 2'b11;
 			end
@@ -180,7 +183,6 @@ module Execution #(parameter DATA_WIDTH = 16)(
 				opcode_fixed  = 2'b11;
 				opcode_vector = 2'b11;
 			end
-			//for (int i = 0; i < NUM_LANES; i++)
 			
 		endcase
 	end

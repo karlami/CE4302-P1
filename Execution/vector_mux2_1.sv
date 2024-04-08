@@ -1,8 +1,8 @@
 module vector_mux2_1 #(parameter DATA_WIDTH=16,VECTOR_LENGTH=16) (
-	input logic [DATA_WIDTH-1:0] d0[VECTOR_LENGTH-1:0],
-	input logic [DATA_WIDTH-1:0] d1[VECTOR_LENGTH-1:0],
-	input logic s,
-	output logic [DATA_WIDTH-1:0] out[VECTOR_LENGTH-1:0]
+	input  reg signed [DATA_WIDTH-1:0] d0[VECTOR_LENGTH-1:0],
+	input  reg signed  [DATA_WIDTH-1:0] d1[VECTOR_LENGTH-1:0],
+	input  reg s,
+	output reg signed  [DATA_WIDTH-1:0] out[VECTOR_LENGTH-1:0]
 );
 
 generate

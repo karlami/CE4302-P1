@@ -5,7 +5,7 @@ module tb_ALU_Vectorial;
 	// Parameters
 	parameter DATA_WIDTH = 16;
 	parameter DELAY = 10; // Delay between inputs in simulation steps
-
+	
 	// Inputs
 	reg signed [DATA_WIDTH-1:0] A [DATA_WIDTH-1:0];
 	reg signed [DATA_WIDTH-1:0] B [DATA_WIDTH-1:0];
@@ -27,6 +27,7 @@ module tb_ALU_Vectorial;
 	reg VExpected [DATA_WIDTH-1:0];
 	reg Z [DATA_WIDTH-1:0];
 	reg ZExpected [DATA_WIDTH-1:0];
+	
 	
 	ALU_Vectorial #(.DATA_WIDTH(DATA_WIDTH)) Test(
     .A(A),
