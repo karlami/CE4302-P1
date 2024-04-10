@@ -4,9 +4,9 @@ module signExtendImm_tb;
   parameter IMM_WIDTH = 19;
   
   reg signed [IMM_WIDTH-1:0] in;
-  wire signed [INTEGER_WIDTH-1:0] out;
+  reg signed [INTEGER_WIDTH-1:0] out;
   
-  signExtendImm #(IMM_WIDTH) dut (
+  signExtendImm dut (
     .in(in),
     .out(out)
   );
@@ -17,13 +17,12 @@ module signExtendImm_tb;
     
     in = 19'sd12345;
     #10;
-    $display("Test Case 1: Input: %d, Output: %d", in, out);
+    $display("Test Case 1: Input: %b, Output: %b", in, out);
     
     in = -19'sd54321;
     #10;
-    $display("Test Case 2: Input: %d, Output: %d", in, out);
+    $display("Test Case 2: Input: %b, Output: %b", in, out);
     
-    $finish;
   end
 
 endmodule
