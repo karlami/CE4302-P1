@@ -36,29 +36,61 @@ module Control_Unit_Decode_tb;
         // Test case 1: Opcode = 5'b00000 ADD
         Opcode = 5'b00000;
         #10;
-		  //Test Cases 
-		  // SUB
-		  Opcode = 5'b00001;
-        #10;
+		  assert (RegDst == 1 && RegSrc1 == 1'b1 && RegSrc2 == 1'b1 && ALUOp == 4'b0000 && ALUSrc == 0 && MemRead == 0 && MemWrite == 0 && MemtoReg == 0 && RegWrite == 0 && Branch == 0 
+		  && BranchOp == 1'b0 && ALUDest== 1'b1 && PF_op == 1'b0 && ImmSrc == 1'b0 && Integer_op == 1'b1) $display("Exito en decodificar caso 1 ");
+	     else $error("Fallo la unidad de control");
+		  
 		  //G3_LDR
 		  Opcode = 5'b00100;
         #10;
 		  
+		  assert(RegDst == 1 && RegSrc1 == 1'b1 && RegSrc2 == 1'b1 && ALUOp == 4'b0100 && ALUSrc == 0 && MemRead == 1 && MemWrite == 0 && MemtoReg == 1			
+		  && RegWrite == 1 && Branch == 0 && BranchOp == 1'b0 && ALUDest== 1'b1 && PF_op == 1'b0 && ImmSrc == 1'b0 && Integer_op == 1'b1) $display("Exito en decodificar caso 2 ");
+		  else $error("Fallo la unidad de control");
 		  
 		  //G3_FADD
 		  Opcode = 5'b01000;
         #10;
-		  //G3_FLDR
-		  Opcode = 5'b01100;
-        #10;
 		 
+		 assert(RegDst == 1	
+				&& RegSrc1 == 1'b1
+				&& RegSrc2 == 1'b1
+				&& ALUOp == 4'b0000 	
+				&& ALUSrc == 0 	 				
+				&& MemRead == 0			
+				&& MemWrite == 0			
+				&& MemtoReg == 0			
+				&& RegWrite == 0		
+				&& Branch == 0			
+				&& BranchOp == 1'b0 	 		
+				&& ALUDest== 1'b1			
+				&& PF_op == 1'b1
+				&& ImmSrc == 1'b0
+				&& Integer_op == 1'b0) $display("Exito en decodificar caso 3 ");
+		  else $error("Fallo la unidad de control");
 		 
 		  //G3_B
 		  Opcode = 5'b11101;
         #10;
-		  //Caso DEFAULT	
-		  Opcode = 5'b11111;
-        #10;
+		  
+		 assert( RegDst == 1		
+				&& RegSrc1 == 1'b1
+				&& RegSrc2 == 1'b1
+				&& ALUOp == 4'b0100 	
+				&& ALUSrc == 0 	 		
+				&& MemRead == 0				
+				&& MemWrite == 0			
+				&& MemtoReg == 0			
+				&& RegWrite == 0		
+				&& Branch == 0			
+				&& BranchOp == 1'b0 	
+				&& ALUDest== 1'b1		
+				&& PF_op == 1'b0
+				&& ImmSrc == 1'b0
+				&& Integer_op == 1'b0)$display("Exito en decodificar caso 4 ");
+		  else $error("Fallo la unidad de control");
+		  
+
 		
 
         $finish;
