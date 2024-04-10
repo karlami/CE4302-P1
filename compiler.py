@@ -1,16 +1,10 @@
 import sys
 import os
 
-instructions_file_path = sys.argv[1]
-compiled_file_path = sys.argv[2]
+instructions_file = open("code.asm", 'r')
+compiled_file = open("compiled.txt", 'a')
 
-if (os.path.exists(compiled_file_path)):
-    os.remove(compiled_file_path)
-
-instructions_file = open(instructions_file_path, 'r')
-compiled_file = open(compiled_file_path, 'a')
-
-empty_nibble = '0000'
+empty_bits = '0000'
 
 op_codes = {
     'Integer Arithmetic': {
@@ -41,33 +35,135 @@ op_codes = {
         'G3_VSTR': '10101'
     },
     'General': {
-        'G3_MOVI': '11000',
-        'G3_MOVR': '11001',
-        'G3_CMP': '11100',
-        'G3_B': '11101',
-        'G3_BLT': '11110'
+        'G3_CMP': '11100'
     },
     'General Branch': {
         'G3_B': '11101',
         'G3_BLT': '11110'
+    },
+    'Mov': {
+        'G3_MOVI': '11000',
+        'G3_MOVR': '11001',
     }
 }
 
-registers = {
-    'r0': '0000',
-    'r1': '0001',
-    'r2': '0010',
-    'r3': '0011',
-    'r4': '0100',
-    'r5': '0101',
-    'r6': '0110',
-    'r7': '0111',
-    'r8': '1000',
-    'r9': '1001',
-    'r10': '1010',
-    'r11': '1011',
+scalar_registers = {
+    'r0': '0000000',
+    'r1': '0000001',
+    'r2': '0000010',
+    'r3': '0000011',
+    'r4': '0000100',
+    'r5': '0000101',
+    'r6': '0000110',
+    'r7': '0000111',
+    'r8': '0001000',
+    'r9': '0001001',
+    'r10': '0001010',
+    'r11': '0001011',
+    'r12': '0001100',
+    'r13': '0001101',
+    'r14': '0001110',
+    'r15': '0001111',
+    'r16': '0010000',
+    'r17': '0010001',
+    'r18': '0010010',
+    'r19': '0010011',
+    'r20': '0010100',
+    'r21': '0010101',
+    'r22': '0010110',
+    'r23': '0010111',
+    'r24': '0011000',
+    'r25': '0011001',
+    'r26': '0011010',
+    'r27': '0011011',
+    'r28': '0011100',
+    'r29': '0011101',
+    'r30': '0011110',
+    'r31': '0011111'
 }
 
+vectorial_registers = {
+    'vr0': '0000000',
+    'vr1': '0000001',
+    'vr2': '0000010',
+    'vr3': '0000011',
+    'vr4': '0000100',
+    'vr5': '0000101',
+    'vr6': '0000110',
+    'vr7': '0000111',
+    'vr8': '0001000',
+    'vr9': '0001001',
+    'vr10': '0001010',
+    'vr11': '0001011',
+    'vr12': '0001100',
+    'vr13': '0001101',
+    'vr14': '0001110',
+    'vr15': '0001111',
+    'vr16': '0010000',
+    'vr17': '0010001',
+    'vr18': '0010010',
+    'vr19': '0010011',
+    'vr20': '0010100',
+    'vr21': '0010101',
+    'vr22': '0010110',
+    'vr23': '0010111',
+    'vr24': '0011000',
+    'vr25': '0011001',
+    'vr26': '0011010',
+    'vr27': '0011011',
+    'vr28': '0011100',
+    'vr29': '0011101',
+    'vr30': '0011110',
+    'vr31': '0011111',
+    'vr32': '0100000',
+    'vr33': '0100001',
+    'vr34': '0100010',
+    'vr35': '0100011',
+    'vr36': '0100100',
+    'vr37': '0100101',
+    'vr38': '0100110',
+    'vr39': '0100111',
+    'vr40': '0101000',
+    'vr41': '0101001',
+    'vr42': '0101010',
+    'vr43': '0101011',
+    'vr44': '0101100',
+    'vr45': '0101101',
+    'vr46': '0101110',
+    'vr47': '0101111',
+    'vr48': '0110000',
+    'vr49': '0110001',
+    'vr50': '0110010',
+    'vr51': '0110011',
+    'vr52': '0110100',
+    'vr53': '0110101',
+    'vr54': '0110110',
+    'vr55': '0110111',
+    'vr56': '0111000',
+    'vr57': '0111001',
+    'vr58': '0111010',
+    'vr59': '0111011',
+    'vr60': '0111100',
+    'vr61': '0111101',
+    'vr62': '0111110',
+    'vr63': '0111111',
+    'vr64': '1000000',
+    'vr65': '1000001',
+    'vr66': '1000010',
+    'vr67': '1000011',
+    'vr68': '1000100',
+    'vr69': '1000101',
+    'vr70': '1000110',
+    'vr71': '1000111',
+    'vr72': '1001000',
+    'vr73': '1001001',
+    'vr74': '1001010',
+    'vr75': '1001011',
+    'vr76': '1001100',
+    'vr77': '1001101',
+    'vr78': '1001110',
+    'vr79': '1001111'
+}
 
 def to_binary_string(number, width):
     if (number < 0):
@@ -75,13 +171,11 @@ def to_binary_string(number, width):
     else:
         return f'{number:0{width}b}'
 
-
-def split_nibbles(binary_string):
+def split_bits(binary_string):
     result = []
     for i in range(int(len(binary_string)/4)):
         result.append(f'{binary_string[i*4:(i+1)*4]}')
     return result
-
 
 def get_op_code(op_code_key):
     for inst_type in op_codes:
@@ -94,10 +188,15 @@ def get_op_code(op_code_key):
 
 def get_register_operand(operand):
     try:
-        return registers[operand]
+        return scalar_registers[operand]
     except KeyError:
         raise Exception(f'Error: invalid operand "{operand}"')
-
+    
+def get_vect_register_operand(operand):
+    try:
+        return vectorial_registers[operand]
+    except KeyError:
+        raise Exception(f'Error: invalid operand "{operand}"')
 
 def get_immediate_operand(operand, width):
     try:
@@ -112,10 +211,9 @@ def get_immediate_operand(operand, width):
             raise Exception(
                 f'Error: immediate operand "{operand}" is too large. Max value is {max_hex_value}.')
 
-        return split_nibbles(binary_operand)
+        return split_bits(binary_operand)
     except Exception as error:
         raise Exception(str(error))
-
 
 def arith_instruction(op_code, operands):
     operand_1 = get_register_operand(operands[0])
@@ -123,27 +221,33 @@ def arith_instruction(op_code, operands):
     operand_3 = get_register_operand(operands[2])
     return [op_code, operand_1, operand_2, operand_3]
 
-def control_instruction(op_code, operands, current_pc, labels):
-    if op_code in ['G3_LDR', 'G3_STR', 'G3_FLDR', 'G3_FSTR', 'G3_VLDR', 'G3_VSTR']:
-        return memory_instruction(op_code, operands)
-    elif op_code in ['G3_MOVI', 'G3_MOVR', 'G3_CMP']:
-        return mov_instruction(op_code, operands)
-    elif op_code in ['G3_B', 'G3_BLT']:
-        return branch_instruction(op_code, operands, current_pc, labels)
-    else:
-        operand_1 = get_register_operand(operands[0])
-        operand_2 = get_register_operand(operands[1])
-        return [op_code, operand_1, operand_2, empty_nibble]
+def arith_vect_instruction(op_code, operands):
+    operand_1 = get_vect_register_operand(operands[0])
+    operand_2 = get_vect_register_operand(operands[1])
+    operand_3 = get_vect_register_operand(operands[2])
+    return [op_code, operand_1, operand_2, operand_3]
 
+def control_instruction(op_code, operands):
+    operand_1 = get_register_operand(operands[0])
+    operand_2 = get_register_operand(operands[1])
+    return [op_code, operand_1, operand_2, empty_bits]
+    
+def control_vect_instruction(op_code, operands):
+    operand_1 = get_vect_register_operand(operands[0])
+    operand_2 = get_vect_register_operand(operands[1])
+    return [op_code, operand_1, operand_2, empty_bits]
+    
 def mov_instruction(op_code, operands):
     if op_code == 'G3_MOVI':
         operand_1 = get_register_operand(operands[0])
-        operand_2_nibbles = get_immediate_operand(operands[1], 8)
-        return [op_code, operand_1, operand_2_nibbles[0], operand_2_nibbles[1]]
+        operand_2 = get_immediate_operand(operands[1], 7)
+        op_code_bits = to_binary_string(op_code, 5)
+        return [op_code_bits, operand_1, operand_2]
     else:
         operand_1 = get_register_operand(operands[0])
         operand_2 = get_register_operand(operands[1])
-        return [op_code, operand_1, operand_2, empty_nibble]
+        op_code_bits = to_binary_string(op_code, 5)
+        return [op_code_bits, operand_1, operand_2, empty_bits]
 
 def branch_instruction(op_code, operands, current_pc, labels):
     if op_code == 'G3_B' or op_code == 'G3_BLT':
@@ -153,27 +257,27 @@ def branch_instruction(op_code, operands, current_pc, labels):
                 branch_pc = label_pc - current_pc
 
                 branch_operand = to_binary_string(branch_pc, 12)
-                branch_nibbles = split_nibbles(branch_operand)
+                branch_bits = split_bits(branch_operand)
 
-                return [op_code, branch_nibbles[0], branch_nibbles[1], branch_nibbles[2]]
+                return [op_code, branch_bits[0], branch_bits[1], branch_bits[2]]
 
         raise Exception(
             f'Error: label "{operands[0]}" not found in program.')
     else:
         raise Exception(f'Error: invalid branch instruction "{op_code}"')
 
-
 def decode_instruction(op_code_key, operands, current_pc, labels):
     try:
         if op_code_key in op_codes['Integer Arithmetic'] or \
-           op_code_key in op_codes['Fixed Arithmetic'] or \
-           op_code_key in op_codes['Vectorial Arithmetic']:
+           op_code_key in op_codes['Fixed Arithmetic']:
             return arith_instruction(op_code_key, operands)
+        elif op_code_key in op_codes['Vectorial Arithmetic']:
+            return arith_vect_instruction(op_code_key, operands)
         elif op_code_key in op_codes['Integer Control'] or \
-             op_code_key in op_codes['Fixed Control'] or \
-             op_code_key in op_codes['Vectorial Control'] or \
-             op_code_key in op_codes['General']:
-            return control_instruction(op_code_key, operands, current_pc, labels)
+             op_code_key in op_codes['Fixed Control']:
+            return control_instruction(op_code_key, operands)
+        elif op_code_key in op_codes['Vectorial Control']:
+            return control_vect_instruction(op_code_key, operands)
         elif op_code_key in op_codes['General Branch']:
             return branch_instruction(op_code_key, operands, current_pc, labels)
     except Exception as error:
@@ -204,20 +308,20 @@ try:
         op_code_key = instruction[0]
         operands = instruction[1].replace(' ', '').split(',')
 
-        instruction_nibbles = decode_instruction(
+        instruction_bits = decode_instruction(
             op_code_key, operands, pc, labels)
 
         print(f'PC: {pc}')
         print(instruction)
-        print(instruction_nibbles)
+        print(instruction_bits)
         print('-------------------------------------')
 
-        for nibble in instruction_nibbles:
-            compiled_file.write(f'{nibble}\n')
+        for bits in instruction_bits:
+            compiled_file.write(f'{bits}\n')
             pc += 1
 
     while pc < instruction_memory_size:
-        compiled_file.write(f'{empty_nibble}\n')
+        compiled_file.write(f'{empty_bits}\n')
         pc += 1
 
 except Exception as error:
