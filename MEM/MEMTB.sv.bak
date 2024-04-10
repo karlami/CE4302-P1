@@ -1,0 +1,60 @@
+module MEMTB();
+
+logic clk,rst,RegWrite,MemWrite,Vectorop, MemtoReg,
+logic [18:0] Address,
+logic [15:0] Vectorresult [15:0],
+logic [15:0] ALUresult,
+logic RegWrite_out, MemtoReg_out, BlockPipe,
+logic [15:0] Alu_out,data_out,
+logic [15:0] VectorResult_out [15:0]);
+
+MEM memory(clk,rst,RegWrite,MemWrite,Vectorop,MemtoReg,Address,Vectorresult,ALUresult,RegWriteout,MemtoReg_out,BlockPipe,Alu_out,data_out,VectorResult_out)
+
+initial begin
+//Variables datos
+ALUresult=16'd10;
+Address=19'd0;
+for(int i=0;i<16;i++)begin
+	Vectorresult[i] = i;
+end
+
+//Variables control
+clk=0;
+rst=0;
+//Variables operación ("add" escalar)
+RegWrite=1;
+MemWrite=0;
+Vectorop=0;
+MemtoReg=0;
+
+clk = ~ clk;
+#10;
+clk = ~ clk;
+assert (RegWrite_out == 1'b1) $display("correcto RegWrite 1");
+else $error ("Fallo RegWrite 1");
+assert (MemtoReg_out == MemtoReg) $display("correcto MemtoReg 1");
+else $error ("Fallo  MemtoReg 1");
+assert (BlockPipeStr == 1'b0) $display("correcto Block 1");
+else $error ("Fallo Bloqueo Pipe 1");
+assert (ALU_out == ALUresult) $display("correcto ALUResult 1");
+else $error ("Fallo ALUResult 1");
+#10;
+
+
+//Variables operación ("str" vectorial)
+Vectorop=1;
+clk = ~ clk;
+#10;
+for(int i=0;BlockPipe==1;i++)begin
+	clk = ~ clk;
+	assert (data_out == i) $display("correcto Store Vect 3");
+	else $error ("correcto Store Vect 3");
+	#10;
+	clk = ~ clk;
+	#10;
+end
+
+
+end
+
+endmodule

@@ -1,0 +1,23 @@
+module MEM #(paramter DATA_wIDTH=16)(input logic clk,rst,RegWrite,MemWrite,Vectorop, MemtoReg
+			  input logic [18:0] Address,
+			  input logic [DATA_wIDTH:0] Vectorresult [DATA_wIDTH:0],
+			  input logic [DATA_wIDTH:0] ALUresult,
+			  output logic RegWrite_out, MemtoReg_out, BlockPipe,
+			  output logic [DATA_wIDTH:0] Alu_out,data_out,
+			  output logic [DATA_wIDTH:0] VectorResult_out [DATA_wIDTH:0]);
+			  
+			  logic [DATA_WIDTH:0] DatatoMem;
+			  logic [18:0] AddresstoMem;
+			  logic BlockPipeStr,BlockPipeLd;
+			  
+			  VectorStoreHandler MemStrHandle #(.DATA_WIDTH(DATA_WIDTH))(Address,clk,Vectorop,MemWrite,ALUresult,Vectorresult,BlockPipeStr,AddresstoMem,DatatoMem);
+			  
+			  RAM ram(rst,AddresstoMem,clk,DatatoMem,MemWrite,data_out);
+			  
+			  VectorLoadHandler MemLdHandle #(.DATA_WIDTH(DATA_WIDTH))(Adress,clk,Vectorop,MemWrite,DatatoMem,VectorResult_out,BlickPipeLd,AddresstoMem);
+			  
+			  assign BlockPipe=BlockPipeStr or BlockPipeLd;
+			  ALU_out=ALUresult;
+			  MemtoReg_out=MemtoReg;
+			
+endmodule
