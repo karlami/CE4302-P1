@@ -1,10 +1,13 @@
 import sys
 import os
 
-instructions_file = open("code.asm", 'r')
+instructions_file = open("arith.txt", 'r')
 compiled_file = open("compiled.txt", 'a')
 
-empty_bits = '0000'
+# 13 bits to complete 32 bits
+empty_bits_13 = '0000000000000'
+# 6 bits to complete 32 bits
+empty_bits_6 = '000000'
 
 op_codes = {
     'Integer Arithmetic': {
@@ -171,12 +174,6 @@ def to_binary_string(number, width):
     else:
         return f'{number:0{width}b}'
 
-def split_bits(binary_string):
-    result = []
-    for i in range(int(len(binary_string)/4)):
-        result.append(f'{binary_string[i*4:(i+1)*4]}')
-    return result
-
 def get_op_code(op_code_key):
     for inst_type in op_codes:
         if op_code_key in op_codes[inst_type]:
@@ -185,13 +182,12 @@ def get_op_code(op_code_key):
 
     raise Exception(f'Error: invalid operation "{op_code_key}"')
 
-
 def get_register_operand(operand):
     try:
         return scalar_registers[operand]
     except KeyError:
         raise Exception(f'Error: invalid operand "{operand}"')
-    
+
 def get_vect_register_operand(operand):
     try:
         return vectorial_registers[operand]
@@ -203,15 +199,12 @@ def get_immediate_operand(operand, width):
         int_operand = int(operand.replace('#0x', ''), 16)
         binary_operand = to_binary_string(int_operand, width)
 
-        if (width % 4 != 0):
-            raise Exception(
-                f'Error: immediate operand width must be a multiple of 4. Got {width}.')
         if (int_operand > 2**width - 1):
             max_hex_value = f'{(2**width - 1):x}'
             raise Exception(
                 f'Error: immediate operand "{operand}" is too large. Max value is {max_hex_value}.')
 
-        return split_bits(binary_operand)
+        return binary_operand
     except Exception as error:
         raise Exception(str(error))
 
@@ -219,35 +212,35 @@ def arith_instruction(op_code, operands):
     operand_1 = get_register_operand(operands[0])
     operand_2 = get_register_operand(operands[1])
     operand_3 = get_register_operand(operands[2])
-    return [op_code, operand_1, operand_2, operand_3]
+    return [op_code, operand_1, operand_2, operand_3, empty_bits_6]
 
 def arith_vect_instruction(op_code, operands):
     operand_1 = get_vect_register_operand(operands[0])
     operand_2 = get_vect_register_operand(operands[1])
     operand_3 = get_vect_register_operand(operands[2])
-    return [op_code, operand_1, operand_2, operand_3]
+    return [op_code, operand_1, operand_2, operand_3, empty_bits_6]
 
 def control_instruction(op_code, operands):
     operand_1 = get_register_operand(operands[0])
     operand_2 = get_register_operand(operands[1])
-    return [op_code, operand_1, operand_2, empty_bits]
+    return [op_code, operand_1, operand_2, empty_bits_13]
     
 def control_vect_instruction(op_code, operands):
     operand_1 = get_vect_register_operand(operands[0])
     operand_2 = get_vect_register_operand(operands[1])
-    return [op_code, operand_1, operand_2, empty_bits]
+    return [op_code, operand_1, operand_2, empty_bits_13]
     
 def mov_instruction(op_code, operands):
     if op_code == 'G3_MOVI':
         operand_1 = get_register_operand(operands[0])
         operand_2 = get_immediate_operand(operands[1], 7)
         op_code_bits = to_binary_string(op_code, 5)
-        return [op_code_bits, operand_1, operand_2]
+        return [op_code_bits, operand_1, operand_2, empty_bits_13]
     else:
         operand_1 = get_register_operand(operands[0])
         operand_2 = get_register_operand(operands[1])
         op_code_bits = to_binary_string(op_code, 5)
-        return [op_code_bits, operand_1, operand_2, empty_bits]
+        return [op_code_bits, operand_1, operand_2, empty_bits_13]
 
 def branch_instruction(op_code, operands, current_pc, labels):
     if op_code == 'G3_B' or op_code == 'G3_BLT':
@@ -256,10 +249,9 @@ def branch_instruction(op_code, operands, current_pc, labels):
                 label_pc = label['pc']
                 branch_pc = label_pc - current_pc
 
-                branch_operand = to_binary_string(branch_pc, 12)
-                branch_bits = split_bits(branch_operand)
+                branch_operand = to_binary_string(branch_pc, 19)
 
-                return [op_code, branch_bits[0], branch_bits[1], branch_bits[2]]
+                return [op_code, branch_operand]
 
         raise Exception(
             f'Error: label "{operands[0]}" not found in program.')
@@ -287,44 +279,34 @@ instruction_memory_size = 400
 pc = 0
 labels = []
 instructions = []
-for instruction in instructions_file:
-    instruction = instruction.strip().lower()
-
-    if (instruction == '' or instruction[0] == ';'):
-        continue
-    elif (instruction[-1] == ':'):
-        label = {'label_name': instruction[:-1], 'pc': pc}
-        labels.append(label)
-        continue
-
-    instructions.append(instruction)
-    pc += 4
-
-pc = 0
 try:
-    for instruction in instructions:
-        instruction = instruction.split(' ', 1)
+    with open("compiled.txt", 'a') as compiled_file:
+        for instruction in instructions:
+            instruction = instruction.split(' ', 1)
 
-        op_code_key = instruction[0]
-        operands = instruction[1].replace(' ', '').split(',')
+            op_code_key = instruction[0]
+            operands = instruction[1].replace(' ', '').split(',')
 
-        instruction_bits = decode_instruction(
-            op_code_key, operands, pc, labels)
+            instruction_bits = decode_instruction(
+                op_code_key, operands, pc, labels)
 
-        print(f'PC: {pc}')
-        print(instruction)
-        print(instruction_bits)
-        print('-------------------------------------')
+            print(f'PC: {pc}')
+            print(instruction)
+            print(instruction_bits)
+            print('-------------------------------------')
 
-        for bits in instruction_bits:
-            compiled_file.write(f'{bits}\n')
+            for bits in instruction_bits:
+                compiled_file.write(f'{bits}\n')
+                pc += 1
+
+        while pc < instruction_memory_size:
+            compiled_file.write(f'{empty_bits_13}\n')
             pc += 1
-
-    while pc < instruction_memory_size:
-        compiled_file.write(f'{empty_bits}\n')
-        pc += 1
 
 except Exception as error:
     print(str(error))
-    os.remove(compiled_file_path)
+    os.remove("compiled.txt")
     sys.exit(1)
+
+finally:
+    compiled_file.close()
