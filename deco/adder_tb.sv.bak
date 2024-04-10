@@ -1,0 +1,48 @@
+module adder_tb;
+
+    // Parámetros
+    parameter WIDTH = 8;
+    parameter CLK_PERIOD = 10;
+
+    // Entradas y salidas
+    logic [WIDTH-1:0] a, b;
+    logic [WIDTH-1:0] y;
+
+    // Clock
+    logic clk;
+
+    // Instancia del módulo adder
+    adder #(WIDTH) dut (
+        .a(a),
+        .b(b),
+        .y(y)
+    );
+
+    // Generación de clock
+    always #((CLK_PERIOD)/2) clk = ~clk;
+
+    // Estímulos
+    initial begin
+        // Caso 1
+        a = 8'b0000_0001;
+        b = 8'b0000_0001;
+        #10; // Esperar un poco
+        $display("Caso 1: a=%b, b=%b, y=%b", a, b, y);
+
+        // Caso 2
+        a = 8'b0000_0010;
+        b = 8'b0000_0011;
+        #10; // Esperar un poco
+        $display("Caso 2: a=%b, b=%b, y=%b", a, b, y);
+
+        // Caso 3
+        a = 8'b1111_1111;
+        b = 8'b0000_0001;
+        #10; // Esperar un poco
+        $display("Caso 3: a=%b, b=%b, y=%b", a, b, y);
+
+        // Finalizar la simulación
+        $finish;
+    end
+
+endmodule

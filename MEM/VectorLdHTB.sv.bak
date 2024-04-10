@@ -1,0 +1,70 @@
+module VectorLdHTB();
+
+logic [18:0] Address;
+logic clk,Vectorop,WriteEn;
+logic [15:0] MemDataRd;
+logic [15:0] VectorRead [15:0];
+logic BlockPipeStr;
+logic [18:0] Out_Address;
+logic [15:0] MemorydataWrite;
+
+VectorLoadHandler #(.Width(16)) VldHdlr (Address,clk,Vectorop,WriteEn,MemDataRd,VectorRead,BlockPipeStr,OutAddress);
+
+initial begin
+
+Address = 19'd0;
+Result = 16'd;
+clk=0;
+Vectorop=0;
+WriteEn=0;
+
+
+for(int i=0;i<16;i++)begin
+	clk = ~ clk;
+	assert (BlockPipeStr == 1'b0) $display("correcto");
+	else $error ("Fallo Bloqueo Pipe");
+	#10;
+	clk = ~ clk;
+	#10;
+	
+end
+
+Address = 19'd0;
+Result = 16'd;
+clk=0;
+Vectorop=1;
+WriteEn=0;
+
+
+for(int i=0;i<16;i++)begin
+	clk = ~ clk;
+	assert (VectorResult[i] == Result) $display("correcto");
+	else $error ("Fallo asignación");
+	assert (BlockPipeStr == 1'b1) $display("correcto");
+	else $error ("Fallo Bloqueo Pipe");
+	assert (OutAddress == Address+i) $display("correcto");
+	else $error ("Fallo Direccion");
+	Result<=Result+1;
+	#10;
+	clk = ~ clk;
+	#10;
+	
+end
+
+Address = 19'd0;
+Result = 16'd;
+clk=0;
+Vectorop=1;
+WriteEn=1;
+
+
+for(int i=0;i<16;i++)begin
+	clk = ~ clk;
+	assert (BlockPipeStr == 1'b0) $display("correcto");
+	else $error ("Fallo Bloqueo Pipe");
+	#10;
+	clk = ~ clk;
+	#10;
+	
+end
+endmodule

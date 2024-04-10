@@ -1,0 +1,8 @@
+module UnidadAdelantamiento(
+	input logic [3:0] registerload,registerALU_A,registerALU_B,
+	input logic load,
+	output logic Adelantamiento
+	);
+	assign Adelantamiento = (load&&((registerALU_A == registerload) || (registerALU_B == registerload))) ? 1 : 0; // If either rA or rB equals rl, result is 1, otherwise 0
+
+endmodule

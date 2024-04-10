@@ -32,8 +32,8 @@ def filtrado_fir(senal, coeficientes):
     return resultado_q78
 
 if __name__ == "__main__":
-    x = np.array([-5, -4, -2, -1, 0, 1, 2, 3, 4, 5])
-    b = np.array([0.01, 0.02, 0.03, 0.04, 0.05])
+    x = np.array([-8, -7, -6, -5, -4, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8])
+    b = np.array([0.001, 0.002, 0.003, 0.004, 0.005, 0.006, 0.007, 0.008, 0.009, 0.01, 0.011, 0.012, 0.013, 0.014, 0.015, 0.016])
 
     resultado = filtrado_fir(x, b)
 

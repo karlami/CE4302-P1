@@ -1,0 +1,29 @@
+module VectorStoreHandler #(parameter DATA_WIDTH=16)(
+			  input logic [18:0] Address,
+			  input logic clk,Vectorop,
+			  input logic [DATA_WIDTH:0] Result,
+			  input logic [DATA_WIDTH:0] VectorResult [DATA_WIDTH:0],
+			  output logic BlockPipe,
+			  output logic [18:0] Out_Address,
+			  output logic [DATA_WIDTH:0] MemorydataWrite)
+			  
+			  logic [3:0] mem_adder =4'b0000;
+			  
+			  always_ff @(posedge clk or negedge clk) begin
+					if (posedge clk) begin
+						if (Vectorop) begin
+							if(mem_adder==16)begin
+								assign BlockPipe=0;
+								mem_adder<=4'b0000;
+							end else begin
+								assign BlockPipe=1;
+								Out_Address<=Address+mem_adder;
+								mem_adder<=mem_adder+1;
+							end
+						end
+					end else begin
+						assign MemorydatWrite = Vectorop ? VectorResult[counter] : Result;
+					end
+				end
+				
+endmodule
